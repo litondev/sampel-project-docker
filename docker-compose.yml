@@ -16,21 +16,21 @@ services:
   networks:
    - ldev-ispm
 
-ldev-ispm-client:
- build:
-  context: .
-  dockerfile: DockerfileClient
- image: ldev-ispm-client
- container_name: ldev-ispm-client
- restart: unless-stopped
- tty: true
- working_dir: /ispm/client
- volumes:
-  - ./ispm/client:/ispm/client
-networks:
+ ldev-ispm-client:
+  build:
+   context: .
+   dockerfile: DockerfileClient
+  image: ldev-ispm-client
+  container_name: ldev-ispm-client
+  restart: unless-stopped
+  tty: true
+  working_dir: /ispm/client
+  volumes:
+   - ./ispm/client:/ispm/client
+  networks:
    - ldev-ispm
 
-webserver:
+ webserver:
   image: nginx:alpine
   container_name: webserver  
   restart: unless-stopped
