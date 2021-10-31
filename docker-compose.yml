@@ -1,0 +1,81 @@
+version: '3'
+services:
+
+ ldev-ispm-api:
+  build:
+   context: .
+   dockerfile: DockerfileApi
+  image: ldev-ispm-api
+  container_name: ldev-ispm-api
+  restart: unless-stopped
+  tty: true  
+  working_dir: /ispm/api
+  volumes:
+   - ./ispm/api:/ispm/api
+   - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+  networks:
+   - ldev-ispm
+
+ldev-ispm-client:
+ build:
+  context: .
+  dockerfile: DockerfileClient
+ image: ldev-ispm-client
+ container_name: ldev-ispm-client
+ restart: unless-stopped
+ tty: true
+ working_dir: /ispm/client
+ volumes:
+  - ./ispm/client:/ispm/client
+networks:
+   - ldev-ispm
+
+webserver:
+  image: nginx:alpine
+  container_name: webserver  
+  restart: unless-stopped
+  tty: true
+  ports:
+   - "80:80"  
+   - "8000:8000"   
+  volumes:
+   - ./ispm/:/ispm
+   - ./nginx/:/etc/nginx/conf.d/
+  networks:
+   - ldev-ispm
+
+ database:
+  image: mysql:5.7.22
+  container_name: database
+  restart: unless-stopped
+  tty: true
+  ports:
+   - "3306:3306"
+  environment:
+   MYSQL_DATABASE: ispm
+   MYSQL_ROOT_PASSWORD: root
+  volumes:
+   - ./database:/var/lib/mysql/
+   - ./mysql/my.cnf:/etc/mysql/my.cnf
+  networks:
+   - ldev-ispm
+
+ phpmyadmin:
+  image: phpmyadmin
+  container_name: phpmyadmin
+  restart: always
+  tty: true
+  ports:
+   - "8080:80"
+  environment:
+   PMA_ARBITRARY: 1
+   PMA_HOST: database
+   PMA_PORT: 3306
+   PMA_USER: root
+   PMA_PASSWORD: root
+  networks:
+   - ldev-ispm
+
+networks:
+ ldev-ispm:
+  driver: bridge

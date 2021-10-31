@@ -1,0 +1,78 @@
+docker ps
+
+# pastikan semua jalan (Running) dengan docker ps
+
+
+
+# DATABASE PART =>
+
+# membuat user di mysql
+docker-compose exec -u root database bash
+ mysql -u root -p
+ GRANT ALL ON laravel.* TO 'laraveluser'@'%' IDENTIFIED BY 'your_laravel_db_password';
+ FLUSH PRIVILEGES;
+ EXIT
+
+
+
+
+# LARAVEL PART =>
+
+# check folder
+docker-compose exec -u root ldev-ispm-api ls -l
+
+# check composer
+docker-compose exec -u root ldev-ispm-api composer -v
+
+# check php
+docker-compose exec -u roor ldev-ispm-api php -v
+
+# copy .env file
+cp ./ispm/api/.env.example ./ispm/api/.env
+
+#  edit .env file
+nano ./ispm/api/.env
+
+docker-compose exec -u root ldev-ispm-api composer install
+
+docker-compose exec -u root ldev-ispm-api php artisan key:generate
+
+docker-compose exec -u root ldev-ispm-api php artisan jwt:scret
+
+docker-compose exec -u root ldev-ispm-api php artisan config:cache
+
+docker-compose exec -u root ldev-ispm-api php artisan optimze:clear
+
+docker-compose exec -u root ldev-ispm-api chmod 777 -R /ispm/api/public
+
+docker-compose exec -u root ldev-ispm-api chmod 777 -R /ispm/api/framework/storage
+
+docker-compose exec -u root ldev-ispm-api php artisan migrate:fresh --seed
+
+# done
+
+
+
+
+#  NUXT PART =>
+
+# check folder
+docker-compose exec -u root ldev-ispm-client ls -l
+
+# check npm
+docker-compose exec -u root ldev-ispm-client npm -v
+
+# check node
+docker-compose exec -r root ldev-ispm-client node -v
+
+# copy .env
+cp ./ispm/client/.env.example ./ispm/client/.env
+
+# setting .env
+nano ./ispm/client/.env
+
+docker-compose exec -u root ldev-ispm-client npm install
+
+docker-compose exex -u root ldev-ispm-client npm run build
+
+# done
