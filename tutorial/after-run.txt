@@ -33,6 +33,8 @@ cp ./ispm/api/.env.example ./ispm/api/.env
 #  edit .env file
 nano ./ispm/api/.env
 
+# CHECK BRANCH GITHUB
+
 docker-compose exec -u root ldev-ispm-api composer install
 
 docker-compose exec -u root ldev-ispm-api php artisan key:generate
@@ -71,8 +73,10 @@ cp ./ispm/client/.env.example ./ispm/client/.env
 # setting .env
 nano ./ispm/client/.env
 
-docker-compose exec -u root ldev-ispm-client npm install
+docker-compose exec -u root ldev-ispm-client bash
 
-docker-compose exex -u root ldev-ispm-client npm run build
+# docker-compose exec -u root ldev-ispm-client cd /ispm/client && npm install
+
+# docker-compose exex -u root ldev-ispm-client cd /ispm/client && npm run build
 
 # done
